@@ -1,13 +1,11 @@
 package br.com.selat.wordcount;
 
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +41,7 @@ public class App {
         final Topology topology = builder.build();
 
         // Describe topology
-        System.out.println(topology.describe());
+        logger.debug("{}", topology.describe());
 
         // Create Streams client
         final KafkaStreams streams = new KafkaStreams(topology, props);
@@ -64,6 +62,7 @@ public class App {
             latch.await();
         } catch (InterruptedException e) {
             logger.error("Error running stream", e);
+            Thread.currentThread().interrupt();
         }
         System.exit(0);
     }

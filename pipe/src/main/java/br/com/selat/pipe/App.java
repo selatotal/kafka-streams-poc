@@ -36,7 +36,7 @@ public class App {
         final Topology topology = builder.build();
 
         // Describe topology
-        System.out.println(topology.describe());
+        logger.debug("{}", topology.describe());
 
         // Create Streams client
         final KafkaStreams streams = new KafkaStreams(topology, props);
@@ -57,6 +57,7 @@ public class App {
             latch.await();
         } catch (InterruptedException e) {
             logger.error("Error running stream", e);
+            Thread.currentThread().interrupt();
         }
         System.exit(0);
     }
