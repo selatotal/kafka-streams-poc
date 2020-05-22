@@ -145,3 +145,35 @@ To publish:
 To listen:
 ~/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic streams-linesplit-output --from-beginning --formatter kafka.tools.DefaultMessageFormatter --property print.key=true --property print.value=true --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 ```
+
+### Wordcount
+Count the number of each word sent to topic.
+Before you run, you need to create output topic in kafka.
+As this topic is a changelog stream, you should create with log compaction enable, using the command below:
+```bash
+~/kafka/bin/kafka-topics.sh --create \
+    --bootstrap-server localhost:9092 \
+    --replication-factor 1 \
+    --partitions 1 \
+    --topic streams-wordcount-output \
+    --config cleanup.policy=compact
+```
+To test, you should execute:
+```bash
+gradle run
+```
+After that, you can use kafka commands to publish and check messages, as below:
+```bash
+To publish:
+~/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic streams-plaintext-input
+
+To listen:
+~/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+            --topic streams-wordcount-output \
+            --from-beginning \
+            --formatter kafka.tools.DefaultMessageFormatter \
+            --property print.key=true \
+            --property print.value=true \
+            --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+            --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
+```
